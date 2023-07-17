@@ -1,0 +1,60 @@
+import { Text, SafeAreaView, StyleSheet, View} from "react-native"
+import React from "react"
+import { FlatList, Image } from "react-native"
+import {UseGetSchoolItems}  from "./hooks/getSchoolItems"
+
+
+
+function SchoolItems({user}) {
+
+    
+    const {data, isLoading} = UseGetSchoolItems(user);
+
+    const Item = ({username, time, title, description}: ItemProps) => (
+        <View style={styles.item}>
+          <Text style={styles.username}>{username}</Text>
+          <Text style={styles.time}>{time}</Text>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.description}>{description}</Text>
+          <Image
+            source={require('../../filestream/profile/blank.png')}
+        />
+        </View>
+      );
+    return(
+       
+        <View>
+        {isLoading ? (
+            <Text>Loading</Text>
+        ): data ? (
+            <FlatList 
+            data={data.data}
+            renderItem={({item}) => <Item number={item.number} username = {item.username} time = {item.time} title = {item.title} description = {item.description}/>}
+            keyExtractor={item => item.itemNumber}
+          />
+        ) : (
+            <Text> No data avaliable</Text>
+        )
+        }
+        </View>
+    );
+}
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+
+    },
+
+    item: {
+        backgroundColor: 'yellow',
+        margin: 10,
+        flexDirection: 'row',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start'
+
+    }
+})
+
+export default SchoolItems;
