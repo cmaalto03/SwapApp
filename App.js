@@ -1,67 +1,94 @@
-import * as React from 'react';
-import { View} from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import * as React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import * as SecureStore from 'expo-secure-store';
-
-import Login from './src/screens/Login';
-import Main from './src/screens/Main'
-import Splash from './src/screens/Splash';
-import SchoolItem from './src/screens/tabscreens/Discovery/SchoolItem';
+import { UserProvider } from "./store/UserContext";
+import { RegisterProvider } from "./store/RegisterContext";
+import Login from "./src/screens/Login";
+import Main from "./src/screens/Main";
+import SchoolItem from "./src/screens/tabscreens/Discovery/SchoolItem";
+import Launch from "./src/screens/Launch";
+import InputSchool from "./src/screens/Register/InputSchool";
+import InputName from "./src/screens/Register/InputName";
+import InputCreds from "./src/screens/Register/InputCreds";
+import Splash from "./src/screens/Splash";
 const Stack = createStackNavigator();
+
 const queryClient = new QueryClient();
 
-
-async function getValueFor(key) {
-  let result = await SecureStore.getItemAsync(key);
-  if (result) {
-  } else {
-    console.log("none");
-  }
-}
-
 function App() {
-
-  const username = getValueFor('username');
-  const password = getValueFor('password');
   return (
-    <QueryClientProvider client={queryClient}>
+    <UserProvider>
+      <RegisterProvider>
+        <QueryClientProvider client={queryClient}>
+          <NavigationContainer>
+            <Stack.Navigator>
+              <Stack.Screen
+                name="Launch"
+                component={Launch}
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-    <View style={{ flex: 1 }}>
-      <NavigationContainer>
-        <Stack.Navigator>
+              <Stack.Screen
+                name="InputSchool"
+                component={InputSchool}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="InputName"
+                component={InputName}
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-          {username && password ? (
-          <>
-          <Stack.Screen name="Splash" component={Splash} options = {{
-                    headerShown: false,
-                }} />
-          <Stack.Screen name="Main" component={Main} options = {{
-                    headerShown: false,
-                }}/>
-           <Stack.Screen name="SchoolItem" component={SchoolItem} options = {{
-                    headerShown: true,
-                }}/>
-          </>
-          ) :
-          (
-            <>
-            <Stack.Screen name="Login" component={Login} options = {{
-                    headerShown: false,
-                }}/>
-            <Stack.Screen name="Main" component={Main} options = {{
-                    headerShown: false,
-                }}/>
-                
-            </>
-          )}
-        </Stack.Navigator>
-      </NavigationContainer>
-    </View>
+              <Stack.Screen
+                name="InputCreds"
+                component={InputCreds}
+                options={{
+                  headerShown: false,
+                }}
+              />
 
-    </QueryClientProvider>
+              <Stack.Screen
+                name="Splash"
+                component={Splash}
+                options={{
+                  headerShown: true,
+                }}
+              />
+              <Stack.Screen
+                name="Login"
+                component={Login}
+                options={{
+                  headerShown: false,
+                  unmountOnBlur: true,
+                }}
+              />
 
+              <Stack.Screen
+                name="Main"
+                component={Main}
+                options={{
+                  headerShown: false,
+                }}
+              />
+              <Stack.Screen
+                name="SchoolItem"
+                component={SchoolItem}
+                options={{
+                  headerShown: true,
+                }}
+              />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </QueryClientProvider>
+      </RegisterProvider>
+    </UserProvider>
   );
 }
 

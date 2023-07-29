@@ -1,50 +1,59 @@
-import { View, Text, StyleSheet,} from "react-native";
+import {
+  View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import { useState, useRef, useEffect } from "react";
-import * as SecureStore from 'expo-secure-store';
+import * as SecureStore from "expo-secure-store";
 
 import SchoolItems from "../../../componets/SchoolItems";
+import { useUser } from "../../../../store/UserContext";
 
-
-const Discovery = ({navigation}) => {
-
+const Discovery = ({ navigation }) => {
   //how state is set from secure storage to reduce server calls
-  const [user, setUser] = useState('');
-  const didMount = useRef(false);
 
-  
-  useEffect( () => {
-      async function getValueFor(key) {
-          let result = await SecureStore.getItemAsync(key);
-          if (result) {
-              didMount.current = true;
-              setUser(JSON.parse(result));
-          } else {
-            console.log("none");
-          }
-        }
+  const user = useUser().user;
 
-        getValueFor("user");
-  }, [])
-  
-    return (
-        <View style={StyleSheet.schoolItemsContainer}>
-              <View>
-            {user ? (
-          <SchoolItems user = {user} navigation = {navigation}/>           
-          
-        ) : (
+  return (
+    <SafeAreaView>
+      <View style={styles.header}>
+        <Text style={styles.appName}>Swaply</Text>
+
+        <View>
+          {user ? (
+            <Text style={styles.school}>{user.user.school}</Text>
+          ) : (
             <Text></Text>
-        )
-        }
+          )}
         </View>
-        </View>
-      );
-}
+      </View>
+
+      <View style={StyleSheet.schoolItemsContainer}>
+        <SchoolItems navigation={navigation} />
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-    schoolItemsContainer: {
-        flex: 1,
-    } 
-})
+  schoolItemsContainer: {
+    flex: 1,
+  },
 
-export default Discovery
+  appName: {
+    fontSize: 20,
+    margin: 5,
+  },
+
+  school: {
+    textAlign: "center",
+    fontWeight: "bold",
+
+    fontSize: 20,
+  },
+});
+
+export default Discovery;

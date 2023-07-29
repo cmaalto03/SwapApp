@@ -1,43 +1,57 @@
-import { View, Text} from "react-native";
-import { useState, useRef, useEffect } from "react";
-import * as SecureStore from 'expo-secure-store';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
 
 import UserItems from "../../componets/UserItems";
+import { useUser } from "../../../store/UserContext";
+import {
+  NavigationContainer,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
+import * as SecureStore from "expo-secure-store";
 
+const Profile = ({ navigation }) => {
+  const navigationRef = useNavigationContainerRef(); // You can also use a regular ref with `React.useRef()`
+  const { user, setUser } = useUser();
 
-const Profile = () => {
+  return (
+    <SafeAreaView style={styles.container}>
+      <TouchableOpacity
+        style={styles.logoutButton}
+        onPress={() => {
+          setUser();
+          SecureStore.deleteItemAsync("user");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Launch" }],
+          });
+        }}
+      >
+        <Text style={styles.logoutButtonText}>Logout</Text>
+      </TouchableOpacity>
+      <UserItems />
+    </SafeAreaView>
+  );
+};
 
-  //how state is set from secure storage to reduce server calls
-  const [user, setUser] = useState('');
-  const didMount = useRef(false);
-
-  useEffect( () => {
-      async function getValueFor(key) {
-          let result = await SecureStore.getItemAsync(key);
-          if (result) {
-              didMount.current = true;
-              setUser(JSON.parse(result));
-          } else {
-            console.log("none");
-          }
-        }
-
-        getValueFor("user");
-  }, [])
-
-    return (
-        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-
-            {user ? (
-            <UserItems user = {user}/>           
-          
-        ) : (
-            <Text></Text>
-        )
-        }
-      
-        </View>
-      );
-}
-
-export default Profile
+const styles = StyleSheet.create({
+  logoutButton: {
+    backgroundColor: "grey",
+    height: 25,
+    width: 200,
+  },
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    margin: 100,
+  },
+  logoutButtonText: {
+    textAlign: "center",
+  },
+});
+export default Profile;

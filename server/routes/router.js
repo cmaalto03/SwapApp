@@ -1,128 +1,132 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const bcrypt = require('bcryptjs');
-const uuid = require('uuid');
-const jwt = require('jsonwebtoken');
-const db = require('../lib/mysqlConnector.js');
+const bcrypt = require("bcryptjs");
+const uuid = require("uuid");
+const jwt = require("jsonwebtoken");
+const db = require("../lib/mysqlConnector.js");
 
+const userMiddleware = require("../middleware/users.js");
 
-const userMiddleware = require('../middleware/users.js');
-
-router.post('sign-up', userMiddleware.validateRegister, (req, res, next) => {
-    db.query(
-        'SELECT userID FROM users WHERE LOWER(username) = LOWER(connor)',
-        [req.body.username],
-        (err, result) => {
-          if (result && result.length) {
-            // error
-            return res.status(409).send({
-              message: 'This username is already in use!',
+router.post("/register", (req, res, next) => {
+  db.query(
+    "SELECT id FROM users WHERE LOWER(username) = LOWER(?)",
+    [req.body.user.username],
+    (err, result) => {
+      if (result && result.length) {
+        // error
+        return res.status(409).send({
+          message: "This username is already in use!",
+        });
+      } else {
+        // username not in use
+        bcrypt.hash(req.body.user.password, 10, (err, hash) => {
+          if (err) {
+            return res.status(500).send({
+              message: err,
             });
           } else {
-            // username not in use
-            bcrypt.hash(req.body.password, 10, (err, hash) => {
-              if (err) {
-                return res.status(500).send({
-                  message: err,
+            db.query(
+              "INSERT INTO users (username, password, name, id, school, registered) VALUES (?, ?, ?, ?, ?, now());",
+              [
+                req.body.user.username,
+                hash,
+                req.body.user.name,
+                uuid.v4(),
+                req.body.user.school,
+              ],
+              (err, result) => {
+                if (err) {
+                  console.log(err);
+                  return res.status(400).send({
+                    message: err,
+                  });
+                }
+                return res.status(201).send({
+                  message: "Registered!",
                 });
-              } else {
-                db.query(
-                  'INSERT INTO users (username, password, registered) VALUES (connor3, password, now());',
-                  [uuid.v4(), req.body.username, hash],
-                  (err, result) => {
-                    if (err) {
-                      return res.status(400).send({
-                        message: err,
-                      });
-                    }
-                    return res.status(201).send({
-                      message: 'Registered!',
-                    });
-                  }
-                );
               }
-            });
+            );
           }
-        }
-      );
+        });
+      }
+    }
+  );
 });
 
-router.post('/login', (req, res, next) => {
-    db.query(
-      `SELECT * FROM users WHERE username = ?;`,
-      [req.body.username],
-      (err, result) => {
-        if (err) {
-          return res.status(400).send({
-            message: err,
-          });
-        }
-        if (!result.length) {
-          return res.status(400).send({
-            message: 'Username or password incorrect!',
-          });
-        }
-        bcrypt.compare(
-          req.body.password,
-          result[0]['password'],
-          (bErr, bResult) => {
-            if (bErr) {
-              return res.status(400).send({
-                message: 'Username or password incorrect!',
-              });
-            }
-            if (bResult) {
-              // password match
-              const token = jwt.sign(
-                {
-                  username: result[0].username,
-                  userId: result[0].id,
-                  school: result[0].school
-                },
-                'SECRETKEY',
-                { expiresIn: '90d' }
-              );
-              db.query(`UPDATE users SET last_login = now() WHERE id = 4;`, [
-                result[0].id,
-              ]);
-              return res.status(200).send({
-                message: 'Logged in!',
-                token,
-                user: result[0],
-              });
-            }
+router.post("/login", (req, res, next) => {
+  db.query(
+    `SELECT * FROM users WHERE username = ?;`,
+    [req.body.username],
+    (err, result) => {
+      if (err) {
+        return res.status(400).send({
+          message: err,
+        });
+      }
+      if (!result.length) {
+        return res.status(400).send({
+          message: "Username or password incorrect!",
+        });
+      }
+      bcrypt.compare(
+        req.body.password,
+        result[0]["password"],
+        (bErr, bResult) => {
+          if (bErr) {
             return res.status(400).send({
-              message: 'Username or password incorrect!',
+              message: "Username or password incorrect!",
             });
           }
-        );
-      }
-    );
-  });
+          if (bResult) {
+            // password match
+            const token = jwt.sign(
+              {
+                username: result[0].username,
+                userId: result[0].id,
+                school: result[0].school,
+              },
+              "SECRETKEY",
+              { expiresIn: "90d" }
+            );
+            db.query(`UPDATE users SET last_login = now() WHERE id = 4;`, [
+              result[0].id,
+            ]);
+            return res.status(200).send({
+              message: "Logged in!",
+              token,
+              user: result[0],
+            });
+          }
+          return res.status(400).send({
+            message: "Username or password incorrect!",
+          });
+        }
+      );
+    }
+  );
+});
 
-  router.get('/myitems', userMiddleware.isLoggedIn, (req, res, next) => {
+router.get("/useritems", userMiddleware.isLoggedIn, (req, res, next) => {
+  db.query(
+    `SELECT * from items WHERE userID = '${req.userData.userId}'`,
+    function (err, result) {
+      if (err) throw err;
 
-    db.query(`SELECT * from items WHERE userID = '${req.userData.userId}'`, function(err, result){
+      res.json({ data: result });
+    }
+  );
+});
 
-        if (err) throw err;
-        
+router.get("/schoolitems", userMiddleware.isLoggedIn, (req, res, next) => {
+  db.query(
+    `SELECT username, time, title, description, image, itemNumber FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${req.userData.school}' ORDER BY time DESC`,
+    function (err, result) {
+      if (err) throw err;
 
-        res.json({ data: result});
-    })
+      res.json({ data: result });
+    }
+  );
+});
 
-  });
-
-  router.get('/schoolitems', userMiddleware.isLoggedIn, (req, res, next) => {
-
-    db.query(`SELECT username, time, title, description, image, itemNumber FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${req.userData.school}'`, function(err, result){
-
-        if (err) throw err;
-        
-
-        res.json({ data: result});
-    })
-
-  });
-  
-  module.exports = router;
+module.exports = router;

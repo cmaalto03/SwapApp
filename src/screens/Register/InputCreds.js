@@ -1,96 +1,100 @@
-import * as React from "react";
 import {
+  Text,
   SafeAreaView,
   StyleSheet,
+  TouchableOpacity,
   TextInput,
   View,
-  Image,
-  Text,
-  TouchableOpacity,
 } from "react-native";
+import React from "react";
+import { useState, useRef } from "react";
+import { useRegister } from "../../../store/RegisterContext";
 
-import { useState } from "react";
-import { UseGetUser } from "../componets/hooks/getUser";
-import { useUser } from "../../store/UserContext";
-import { useRegister } from "../../store/RegisterContext";
+import { UseGetUser } from "../../componets/hooks/getUser";
+import { useUser } from "../../../store/UserContext";
+import { save } from "../../../storageFunctions";
+import { UseCreateUser } from "../../componets/hooks/createUser";
 
-import { save } from "../../storageFunctions";
+//          console.log({ ...user, username: username, password: password });
 
-const Login = ({ navigation }) => {
+function InputCreds({ navigation }) {
   const [username, onChangeUsername] = useState("");
   const [password, onChangePassword] = useState("");
 
+  //const { user, setUser } = useUser();
+
+  const userCreds = {
+    ...useRegister().userCred,
+    username: username,
+    password: password,
+  };
+
   const { userCred, setUserCred } = useRegister();
-  const { data, isLoading, refetch } = UseGetUser(username, password);
+
+  //const { data, isLoading, refetch } = UseGetUser(username, password);
+
+  const { data, isLoading, refetch } = UseCreateUser(userCreds);
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        style={styles.logo}
-        source={require("../assets/placeholderlogo.jpg")}
-      />
       <TextInput
+        //make this a drop down later
+
         style={styles.input}
         onChangeText={onChangeUsername}
         //value={userName}
         placeholder="username"
-        autoCapitalize="none"
       />
+
       <TextInput
+        //make this a drop down later
+
         style={styles.input}
         onChangeText={onChangePassword}
-        value={password}
+        //value={userName}
         placeholder="password"
-        autoCapitalize="none"
-
-        //onSubmitEditing={onSubmit}
       />
 
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
           refetch().then((data) => {
-            if (data.data.message == "Logged in!") {
-              setUserCred({ username: username, password: password });
+            if (data.data.message == "Registered!") {
+              setUserCred({
+                ...userCreds,
+                username: username,
+                password: password,
+              });
               save(
                 "user",
                 JSON.stringify({ username: username, password: password })
               );
-
               navigation.navigate("Splash");
             }
           });
         }}
       >
-        <Text style={styles.buttonLabel}>Log in</Text>
+        <Text style={styles.buttonLabel}>Continue</Text>
       </TouchableOpacity>
 
       <View>
         {isLoading ? (
           <Text></Text>
-        ) : data.message == "Username or password incorrect!" ? (
+        ) : data.message == "This username is already in use!" ? (
           <Text>{data.message}</Text>
         ) : (
           <Text></Text>
         )}
       </View>
-      <View style={styles.createAccount}></View>
     </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 16,
-  },
-  input: {
-    height: 50,
-    width: 300,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
   },
   button: {
     backgroundColor: "blue",
@@ -99,16 +103,12 @@ const styles = StyleSheet.create({
     width: 200,
     color: "white",
   },
-  logo: {
-    margin: 75,
-  },
-  createAccount: {
-    margin: 12,
-  },
   buttonLabel: {
     color: "white",
     textAlign: "center",
   },
+  input: {
+    margin: 20,
+  },
 });
-
-export default Login;
+export default InputCreds;

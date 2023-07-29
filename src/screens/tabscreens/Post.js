@@ -1,17 +1,11 @@
-import { View, Text} from "react-native";
-
-
+import { View, Text } from "react-native";
 
 const Post = () => {
-
-  
-    return (
-        <View>
-            <Text>
-                Posts
-            </Text>
-        </View>
-      );
-}
+  return (
+    <View>
+      <Text>Posts</Text>
+    </View>
+  );
+};
 
 export default Post;
