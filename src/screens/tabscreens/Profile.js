@@ -23,7 +23,21 @@ const Profile = ({ navigation }) => {
       <TouchableOpacity
         style={styles.logoutButton}
         onPress={() => {
-          setUser();
+          //default state for user
+          setUser({
+            message: "Logged in!",
+            token: "notoken",
+            user: {
+              id: "none",
+              last_login: "none",
+              name: "none",
+              number: 16,
+              password: "none",
+              registered: "none",
+              school: "none",
+              username: "none",
+            },
+          });
           SecureStore.deleteItemAsync("user");
           navigation.reset({
             index: 0,
@@ -33,6 +47,7 @@ const Profile = ({ navigation }) => {
       >
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
+      <Text>{user.user.username}</Text>
       <UserItems />
     </SafeAreaView>
   );

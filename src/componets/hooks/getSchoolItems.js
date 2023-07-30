@@ -1,27 +1,23 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+export default function getSchoolItems(user, number) {
+  const getItems = async ({ pageParam = 0 }) => {
+    const res = await (
+      await fetch(`http://172.20.10.2:3000/api/schoolitems?page=${pageParam}`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token} `,
+        },
+      })
+    ).json();
+    return {
+      data: res,
+      nextPage: pageParam + 1,
+    };
+  };
 
-const getSchoolItems = async (user) => {
-  try {
-    const response = await fetch(`http://172.20.10.2:3000/api/schoolitems`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${user.token} `,
-      },
-    });
-    const json = await response.json();
-    console.log(json);
-    return json;
-  } catch (error) {}
-};
-
-export const UseGetSchoolItems = (user) => {
-  const { isLoading, data, refetch } = useQuery(
-    ["schoolitems", user],
-    () => getSchoolItems(user),
-    {
-      //refetchInterval: 6000,
-    }
-  );
-
-  return { data, isLoading };
-};
+  return useInfiniteQuery(["schoolitems"], getItems, {
+    getNextPageParam: (lastPage) => {
+      return lastPage.nextPage;
+    },
+  });
+}

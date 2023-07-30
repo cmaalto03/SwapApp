@@ -18,7 +18,7 @@ const Discovery = ({ navigation }) => {
   const user = useUser().user;
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1 }}>
       <View style={styles.header}>
         <Text style={styles.appName}>Swaply</Text>
 
@@ -31,7 +31,7 @@ const Discovery = ({ navigation }) => {
         </View>
       </View>
 
-      <View style={StyleSheet.schoolItemsContainer}>
+      <View style={styles.schoolItemsContainer}>
         <SchoolItems navigation={navigation} />
       </View>
     </SafeAreaView>

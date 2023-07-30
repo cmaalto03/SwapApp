@@ -3,10 +3,18 @@ import React from "react";
 import { FlatList, Image, TouchableOpacity } from "react-native";
 import { UseGetUserItems } from "./hooks/getUserItems";
 import { useUser } from "../../store/UserContext";
+import { RefreshControl } from "react-native";
+import { useState } from "react";
 
 function UserItems({ navigation }) {
+  const [refreshing, setRefreshing] = useState(true);
+
   const user = useUser().user;
   const { data, isLoading } = UseGetUserItems(user);
+
+  const loadUserData = () => {
+    setRefreshing(false);
+  };
 
   const Item = ({ username, time, title, description, image }) => (
     <View style={styles.item}>
@@ -22,6 +30,12 @@ function UserItems({ navigation }) {
         ) : data ? (
           <FlatList
             data={data.data}
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={loadUserData}
+              />
+            }
             renderItem={({ item }) => (
               <Item
                 username={item.username}

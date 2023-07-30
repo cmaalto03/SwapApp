@@ -119,8 +119,11 @@ router.get("/useritems", userMiddleware.isLoggedIn, (req, res, next) => {
 });
 
 router.get("/schoolitems", userMiddleware.isLoggedIn, (req, res, next) => {
+  const page = req.query.page;
   db.query(
-    `SELECT username, time, title, description, image, itemNumber FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${req.userData.school}' ORDER BY time DESC`,
+    `SELECT username, time, title, description, image, itemNumber FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
+      req.userData.school
+    }' ORDER BY time DESC LIMIT ${page * 10}, 10`,
     function (err, result) {
       if (err) throw err;
 
