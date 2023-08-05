@@ -121,15 +121,49 @@ router.get("/useritems", userMiddleware.isLoggedIn, (req, res, next) => {
 router.get("/schoolitems", userMiddleware.isLoggedIn, (req, res, next) => {
   const page = req.query.page;
   db.query(
-    `SELECT username, time, title, description, image, itemNumber FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
+    `SELECT username, time, title, description, image FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
       req.userData.school
     }' ORDER BY time DESC LIMIT ${page * 10}, 10`,
     function (err, result) {
       if (err) throw err;
-
       res.json({ data: result });
     }
   );
 });
 
+router.get("/schoolitemslength"),
+  (req, res, next) => {
+    db.query(
+      `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
+      function (err, result) {
+        if (err) throw err;
+        console.log(result[0]["COUNT(image)"]);
+        res.json({ count: result });
+      }
+    );
+  };
+
+router.post("/upload", userMiddleware.isLoggedIn, (req, res, next) => {
+  db.query(
+    "INSERT INTO items (userID, time, title, description, image, school) VALUES (?, now(), ?, ?, ?, ?)",
+    [
+      req.userData.userId,
+      req.body.title,
+      req.body.description,
+      req.body.imageKey,
+      req.userData.school,
+    ],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+        return res.status(400).send({
+          message: err,
+        });
+      }
+      return res.status(201).send({
+        message: "Registered!",
+      });
+    }
+  );
+});
 module.exports = router;

@@ -12,6 +12,8 @@ import InputSchool from "./src/screens/Register/InputSchool";
 import InputName from "./src/screens/Register/InputName";
 import InputCreds from "./src/screens/Register/InputCreds";
 import Splash from "./src/screens/Splash";
+import Upload from "./src/screens/tabscreens/Post/Upload";
+import NavButton from "./src/componets/Button";
 const Stack = createStackNavigator();
 
 const queryClient = new QueryClient();
@@ -61,6 +63,7 @@ function App() {
                   headerShown: true,
                 }}
               />
+
               <Stack.Screen
                 name="Login"
                 component={Login}
@@ -77,12 +80,27 @@ function App() {
                   headerShown: false,
                 }}
               />
+              <Stack.Screen name="SchoolItem" component={SchoolItem} />
               <Stack.Screen
-                name="SchoolItem"
-                component={SchoolItem}
-                options={{
-                  headerShown: true,
-                }}
+                name="Upload"
+                component={Upload}
+                options={({ navigation }) => ({
+                  headerLeft: () => (
+                    <NavButton
+                      onPress={navigation.goBack}
+                      icon="cross"
+                      color="black"
+                      size="100"
+                    />
+                  ),
+                  headerRight: () => (
+                    <NavButton
+                      onPress={navigation.goBack}
+                      icon="check"
+                      color="black"
+                    />
+                  ),
+                })}
               />
             </Stack.Navigator>
           </NavigationContainer>

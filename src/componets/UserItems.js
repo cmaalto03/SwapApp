@@ -19,7 +19,13 @@ function UserItems({ navigation }) {
   const Item = ({ username, time, title, description, image }) => (
     <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
-      <Image style={styles.image} source={{ uri: `${image}` }} />
+      <Text>{username}</Text>
+      <Image
+        style={styles.image}
+        source={{
+          uri: `https://swapapp.s3.us-east-2.amazonaws.com/item_image/${image}`,
+        }}
+      />
     </View>
   );
   return (

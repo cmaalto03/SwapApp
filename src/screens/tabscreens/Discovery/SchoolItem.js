@@ -6,7 +6,12 @@ function SchoolItem({ route }) {
 
   return (
     <SafeAreaView>
-      <Image style={styles.image} source={{ uri: `${image}` }} />
+      <Image
+        style={styles.image}
+        source={{
+          uri: `https://swapapp.s3.us-east-2.amazonaws.com/item_image/${image}`,
+        }}
+      />
 
       <Text>{username}</Text>
       <Text>{time}</Text>

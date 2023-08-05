@@ -9,6 +9,7 @@ export default function getSchoolItems(user, number) {
         },
       })
     ).json();
+
     return {
       data: res,
       nextPage: pageParam + 1,
@@ -16,7 +17,7 @@ export default function getSchoolItems(user, number) {
   };
 
   return useInfiniteQuery(["schoolitems"], getItems, {
-    getNextPageParam: (lastPage) => {
+    getNextPageParam: (lastPage, allPages) => {
       return lastPage.nextPage;
     },
   });

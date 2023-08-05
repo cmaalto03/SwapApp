@@ -5,7 +5,7 @@ import * as SecureStore from "expo-secure-store";
 import Profile from "./tabscreens/Profile";
 import { ScrollView } from "react-native";
 import Discovery from "./tabscreens/Discovery/Discovery";
-import Post from "./tabscreens/Post";
+import Post from "./tabscreens/Post/Post";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useUser } from "../../store/UserContext";
 const Tab = createBottomTabNavigator();

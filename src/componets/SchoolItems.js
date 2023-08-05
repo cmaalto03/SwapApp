@@ -22,7 +22,6 @@ function SchoolItems({ navigation }) {
 
   const loadNext = () => {
     if (hasNextPage) {
-      console.log("Page");
       fetchNextPage();
     }
   };
@@ -42,7 +41,6 @@ function SchoolItems({ navigation }) {
     //fix later and make it so it resets page to 1
 
     setTimeout(() => {
-      refetch();
       setRefreshing(false);
     }, 1000);
   };
@@ -56,10 +54,16 @@ function SchoolItems({ navigation }) {
             time: time,
             description: description,
             image: image,
+            title: title,
           })
         }
       >
-        <Image style={styles.image} source={{ uri: `${image}` }} />
+        <Image
+          style={styles.image}
+          source={{
+            uri: `https://swapapp.s3.us-east-2.amazonaws.com/item_image/${image}`,
+          }}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -83,11 +87,12 @@ function SchoolItems({ navigation }) {
               <Item
                 username={item.username}
                 image={item.image}
-                description={item.title}
+                description={item.description}
                 time={item.time}
+                title={item.title}
               />
             )}
-            keyExtractor={(item) => item.itemNumber}
+            keyExtractor={(item) => item.image}
           />
         </View>
       ) : (
