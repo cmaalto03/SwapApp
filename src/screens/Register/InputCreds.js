@@ -81,7 +81,7 @@ function InputCreds({ navigation }) {
         {isLoading ? (
           <Text></Text>
         ) : data.message == "This username is already in use!" ? (
-          <Text>{data.message}</Text>
+          <Text>{JSON.stringify(data.message)}</Text>
         ) : (
           <Text></Text>
         )}

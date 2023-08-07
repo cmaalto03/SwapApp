@@ -3,9 +3,12 @@ import React, { useEffect } from "react";
 import { useRegister } from "../../store/RegisterContext";
 import { UseGetUser } from "../componets/hooks/getUser";
 import { useUser } from "../../store/UserContext";
+import { useQueryClient } from "@tanstack/react-query";
+import getSchoolItems from "../componets/hooks/getSchoolItems";
 
 function Splash({ navigation }) {
   const { userCred, setUserCred } = useRegister();
+  const queryClient = useQueryClient();
 
   const { user, setUser } = useUser();
 
@@ -29,7 +32,7 @@ function Splash({ navigation }) {
 
   return (
     <SafeAreaView>
-      <Text>Loading</Text>
+      <Text>This is where the splash screen will go</Text>
     </SafeAreaView>
   );
 }

@@ -11,7 +11,6 @@ import {
 
 import { useState } from "react";
 import { UseGetUser } from "../componets/hooks/getUser";
-import { useUser } from "../../store/UserContext";
 import { useRegister } from "../../store/RegisterContext";
 
 import { save } from "../../storageFunctions";

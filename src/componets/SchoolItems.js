@@ -1,18 +1,23 @@
 import { Text, SafeAreaView, StyleSheet, View } from "react-native";
 import React from "react";
-import { FlatList, Image, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import { useUser } from "../../store/UserContext";
 import { useState } from "react";
 import { RefreshControl } from "react-native";
 import getSchoolItems from "./hooks/getSchoolItems";
+import { Image } from "expo-image";
+import { useQueryClient } from "@tanstack/react-query";
 
 function SchoolItems({ navigation }) {
+  const queryClient = useQueryClient();
+
   const user = useUser().user;
 
   const { data, isLoading, isError, hasNextPage, fetchNextPage, refetch } =
     getSchoolItems(user);
 
   const [refreshing, setRefreshing] = useState(false);
+  const blurhash = "K6PZfSi_.A_3t7t7*0o#Dg";
 
   if (isLoading) return <Text>Loading...</Text>;
 
@@ -26,23 +31,10 @@ function SchoolItems({ navigation }) {
     }
   };
 
-  /*
-  const loadUserData = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  };
-  */
-
-  const loadUserData = () => {
-    setRefreshing(true);
-
+  const onRefresh = async () => {
     //fix later and make it so it resets page to 1
 
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    queryClient.resetQueries();
   };
 
   const Item = ({ username, time, title, description, image }) => (
@@ -63,6 +55,9 @@ function SchoolItems({ navigation }) {
           source={{
             uri: `https://swapapp.s3.us-east-2.amazonaws.com/item_image/${image}`,
           }}
+          loading="eager"
+          priority="high"
+          placeholder={blurhash}
         />
       </TouchableOpacity>
     </View>
@@ -75,14 +70,11 @@ function SchoolItems({ navigation }) {
             data={flattenData}
             numColumns={2}
             columnWrapperStyle={{ justifyContent: "space-between" }} // causes items to be equally spaced
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={loadUserData}
-              />
-            }
             onEndReached={loadNext}
             showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
             renderItem={({ item }) => (
               <Item
                 username={item.username}
@@ -103,17 +95,6 @@ function SchoolItems({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  /*
-  container: {
-    flexGrow: 1,
-  },
-  item: {
-    width: "50%",
-    backgroundColor: "yellow",
-  },
-
-  */
-
   container: {
     width: "100%",
     height: "100%",
@@ -121,6 +102,7 @@ const styles = StyleSheet.create({
 
   item: {
     flex: 2.5 / 5,
+    padding: 5,
   },
 
   image: {

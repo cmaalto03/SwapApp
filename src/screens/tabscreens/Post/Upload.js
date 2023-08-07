@@ -72,7 +72,7 @@ function Upload({ navigation, route }) {
               const createItem = async () => {
                 try {
                   const response = await fetch(
-                    "http://172.20.10.2:3000/api/upload",
+                    "https://kqo7qnhj0l.execute-api.us-east-1.amazonaws.com/prod/api/upload",
                     {
                       method: "POST",
                       headers: {

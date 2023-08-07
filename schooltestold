@@ -1,60 +1,33 @@
-import { Text, SafeAreaView, StyleSheet, View} from "react-native"
-import React from "react"
-import { FlatList, Image } from "react-native"
-import {UseGetSchoolItems}  from "./hooks/getSchoolItems"
+// Use this code snippet in your app.
+// If you need more information about configurations or implementing the sample code, visit the AWS docs:
+// https://docs.aws.amazon.com/sdk-for-javascript/v3/developer-guide/getting-started.html
 
-
-
-function SchoolItems({user}) {
-
-    
-    const {data, isLoading} = UseGetSchoolItems(user);
-
-    const Item = ({username, time, title, description}: ItemProps) => (
-        <View style={styles.item}>
-          <Text style={styles.username}>{username}</Text>
-          <Text style={styles.time}>{time}</Text>
-          <Text style={styles.title}>{title}</Text>
-          <Text style={styles.description}>{description}</Text>
-          <Image
-            source={require('../../filestream/profile/blank.png')}
-        />
-        </View>
-      );
-    return(
-       
-        <View>
-        {isLoading ? (
-            <Text>Loading</Text>
-        ): data ? (
-            <FlatList 
-            data={data.data}
-            renderItem={({item}) => <Item number={item.number} username = {item.username} time = {item.time} title = {item.title} description = {item.description}/>}
-            keyExtractor={item => item.itemNumber}
-          />
-        ) : (
-            <Text> No data avaliable</Text>
-        )
-        }
-        </View>
+import {
+    SecretsManagerClient,
+    GetSecretValueCommand,
+  } from "@aws-sdk/client-secrets-manager";
+  
+  const secret_name = "prod/AppBeta/MySql";
+  
+  const client = new SecretsManagerClient({
+    region: "us-east-1",
+  });
+  
+  let response;
+  
+  try {
+    response = await client.send(
+      new GetSecretValueCommand({
+        SecretId: secret_name,
+        VersionStage: "AWSCURRENT", // VersionStage defaults to AWSCURRENT if unspecified
+      })
     );
-}
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-
-    },
-
-    item: {
-        backgroundColor: 'yellow',
-        margin: 10,
-        flexDirection: 'row',
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        alignItems: 'flex-start'
-
-    }
-})
-
-export default SchoolItems;
+  } catch (error) {
+    // For a list of exceptions thrown, see
+    // https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_GetSecretValue.html
+    throw error;
+  }
+  
+  const secret = response.SecretString;
+  
+  // Your code goes here

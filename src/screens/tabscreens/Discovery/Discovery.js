@@ -1,13 +1,4 @@
-import {
-  View,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { useState, useRef, useEffect } from "react";
-import * as SecureStore from "expo-secure-store";
+import { View, SafeAreaView, StyleSheet, Text } from "react-native";
 
 import SchoolItems from "../../../componets/SchoolItems";
 import { useUser } from "../../../../store/UserContext";

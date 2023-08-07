@@ -12,6 +12,7 @@ import {
   NavigationContainer,
   useNavigationContainerRef,
 } from "@react-navigation/native";
+
 import * as SecureStore from "expo-secure-store";
 
 const Profile = ({ navigation }) => {
@@ -20,6 +21,7 @@ const Profile = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text>{user.user.username}</Text>
       <TouchableOpacity
         style={styles.logoutButton}
         onPress={() => {
@@ -47,7 +49,7 @@ const Profile = ({ navigation }) => {
       >
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
-      <Text>{user.user.username}</Text>
+      <Text>My Items</Text>
       <UserItems />
     </SafeAreaView>
   );

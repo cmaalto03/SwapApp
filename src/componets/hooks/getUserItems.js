@@ -2,12 +2,15 @@ import { useQuery } from "@tanstack/react-query";
 
 const getUserItems = async (user) => {
   try {
-    const response = await fetch(`http://172.20.10.2:3000/api/useritems`, {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${user.token} `,
-      },
-    });
+    const response = await fetch(
+      `https://kqo7qnhj0l.execute-api.us-east-1.amazonaws.com/prod/api/useritems`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${user.token} `,
+        },
+      }
+    );
     const json = await response.json();
     return json;
   } catch (error) {}

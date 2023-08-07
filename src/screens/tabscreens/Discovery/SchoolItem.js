@@ -1,4 +1,6 @@
-import { Text, SafeAreaView, StyleSheet, Image } from "react-native";
+import { Text, SafeAreaView, StyleSheet } from "react-native";
+import { Image } from "expo-image";
+
 import React from "react";
 
 function SchoolItem({ route }) {

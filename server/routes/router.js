@@ -123,25 +123,23 @@ router.get("/schoolitems", userMiddleware.isLoggedIn, (req, res, next) => {
   db.query(
     `SELECT username, time, title, description, image FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
       req.userData.school
-    }' ORDER BY time DESC LIMIT ${page * 10}, 10`,
+    }' ORDER BY time DESC LIMIT ${page * 20}, 20`,
     function (err, result) {
       if (err) throw err;
-      res.json({ data: result });
+
+      db.query(
+        `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
+        function (err, result2) {
+          if (err) throw err;
+          res.json({
+            data: result,
+            count: JSON.stringify(result2[0]["COUNT(image)"]),
+          });
+        }
+      );
     }
   );
 });
-
-router.get("/schoolitemslength"),
-  (req, res, next) => {
-    db.query(
-      `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
-      function (err, result) {
-        if (err) throw err;
-        console.log(result[0]["COUNT(image)"]);
-        res.json({ count: result });
-      }
-    );
-  };
 
 router.post("/upload", userMiddleware.isLoggedIn, (req, res, next) => {
   db.query(
@@ -166,4 +164,9 @@ router.post("/upload", userMiddleware.isLoggedIn, (req, res, next) => {
     }
   );
 });
+
+router.get("/test", (req, res) => {
+  res.send("Hello World!");
+});
+
 module.exports = router;

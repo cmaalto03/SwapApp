@@ -1,21 +1,21 @@
 import { Text, SafeAreaView, StyleSheet, View } from "react-native";
 import React from "react";
-import { FlatList, Image, TouchableOpacity } from "react-native";
+import { FlatList, TouchableOpacity } from "react-native";
 import { UseGetUserItems } from "./hooks/getUserItems";
 import { useUser } from "../../store/UserContext";
 import { RefreshControl } from "react-native";
-import { useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { Image } from "expo-image";
 
 function UserItems({ navigation }) {
-  const [refreshing, setRefreshing] = useState(true);
-
   const user = useUser().user;
   const { data, isLoading } = UseGetUserItems(user);
 
-  const loadUserData = () => {
-    setRefreshing(false);
-  };
+  const queryClient = useQueryClient();
 
+  function onRefresh() {
+    queryClient.resetQueries();
+  }
   const Item = ({ username, time, title, description, image }) => (
     <View style={styles.item}>
       <Text style={styles.title}>{title}</Text>
@@ -36,12 +36,7 @@ function UserItems({ navigation }) {
         ) : data ? (
           <FlatList
             data={data.data}
-            refreshControl={
-              <RefreshControl
-                refreshing={refreshing}
-                onRefresh={loadUserData}
-              />
-            }
+            refreshControl={<RefreshControl onRefresh={onRefresh} />}
             renderItem={({ item }) => (
               <Item
                 username={item.username}
@@ -51,7 +46,7 @@ function UserItems({ navigation }) {
                 image={item.image}
               />
             )}
-            keyExtractor={(item) => item.itemNumber}
+            keyExtractor={(item) => item.image}
           />
         ) : (
           <Text> No data avaliable</Text>
@@ -73,13 +68,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   image: {
-    width: "50%",
+    width: "100%",
     height: undefined,
     aspectRatio: 1,
   },
 
   title: {
-    fontSize: 30,
+    fontSize: 20,
   },
 });
 
