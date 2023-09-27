@@ -1,25 +1,29 @@
-import { useQuery } from "@tanstack/react-query";
-
-const getUserItems = async (user) => {
-  try {
-    const response = await fetch(
-      `https://kqo7qnhj0l.execute-api.us-east-1.amazonaws.com/prod/api/useritems`,
-      {
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useFilter } from "../../../store/FilterContext";
+export default function getUserItems(user, type) {
+  const { filter, setFilter } = useFilter();
+  const getItems = async ({ pageParam = 0 }) => {
+    const res = await (
+      await fetch(`http://136.244.139.127:3000/api/useritems`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${user.token} `,
         },
+      })
+    ).json();
+
+    return {
+      data: res,
+      nextPage: pageParam + 1,
+    };
+  };
+  //lastPage.data.count
+  return useInfiniteQuery(["useritems"], getItems, {
+    getNextPageParam: (lastPage, allPages) => {
+      if (allPages.length * 20 <= lastPage.data.count) {
+        return lastPage.nextPage;
       }
-    );
-    const json = await response.json();
-    return json;
-  } catch (error) {}
-};
-
-export const UseGetUserItems = (user) => {
-  const { isLoading, data, refetch } = useQuery(["useritems", user], () =>
-    getUserItems(user)
-  );
-
-  return { data, isLoading };
-};
+    },
+    keepPreviousData: true,
+  });
+}

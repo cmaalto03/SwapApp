@@ -1,10 +1,22 @@
-import { Text, SafeAreaView, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Text,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from "react-native";
 import React from "react";
+import { useState } from "react";
 import * as SecureStore from "expo-secure-store";
 import { useRegister } from "../../store/RegisterContext";
 import { useEffect } from "react";
+
 function Launch({ navigation }) {
   const { userCred, setUserCred } = useRegister();
+
+  const [authState, setAuthState] = useState();
+
+  const [isLoaded, setIsLoaded] = useState(false);
 
   async function getValueFor(key) {
     try {
@@ -22,28 +34,37 @@ function Launch({ navigation }) {
   }
 
   useEffect(() => {
-    getValueFor("user");
+    getValueFor("user").then((result) => {
+      setAuthState(result);
+      setIsLoaded(true);
+    });
   }, []);
   return (
-    <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate("InputSchool");
-        }}
-      >
-        <Text style={styles.buttonLabel}>Create Account</Text>
-      </TouchableOpacity>
+    <>
+      {authState == undefined && isLoaded == true ? (
+        <SafeAreaView style={styles.container}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("InputSchool");
+            }}
+          >
+            <Text style={styles.buttonLabel}>Create Account</Text>
+          </TouchableOpacity>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => {
-          navigation.navigate("Login");
-        }}
-      >
-        <Text style={styles.buttonLabel}>Login</Text>
-      </TouchableOpacity>
-    </SafeAreaView>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              navigation.navigate("Login");
+            }}
+          >
+            <Text style={styles.buttonLabel}>Login</Text>
+          </TouchableOpacity>
+        </SafeAreaView>
+      ) : (
+        <></>
+      )}
+    </>
   );
 }
 
@@ -53,6 +74,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 16,
     justifyContent: "flex-end",
+  },
+
+  splashImage: {
+    alignItems: "center",
   },
 
   button: {

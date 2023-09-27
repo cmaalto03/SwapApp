@@ -1,9 +1,13 @@
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-export default function getSchoolItems(user, number) {
+import { useFilter } from "../../../store/FilterContext";
+export default function getSchoolItems(user, type) {
+  const { filter, setFilter } = useFilter();
   const getItems = async ({ pageParam = 0 }) => {
     const res = await (
       await fetch(
-        `https://kqo7qnhj0l.execute-api.us-east-1.amazonaws.com/prod/api/schoolitems?page=${pageParam}`,
+        `http://136.244.139.127:3000/api/schoolitems?page=${pageParam}&&type=${JSON.stringify(
+          filter
+        )}`,
         {
           method: "GET",
           headers: {

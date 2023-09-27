@@ -120,36 +120,86 @@ router.get("/useritems", userMiddleware.isLoggedIn, (req, res, next) => {
 
 router.get("/schoolitems", userMiddleware.isLoggedIn, (req, res, next) => {
   const page = req.query.page;
-  db.query(
-    `SELECT username, time, title, description, image FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
-      req.userData.school
-    }' ORDER BY time DESC LIMIT ${page * 20}, 20`,
-    function (err, result) {
-      if (err) throw err;
 
-      db.query(
-        `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
-        function (err, result2) {
-          if (err) throw err;
-          res.json({
-            data: result,
-            count: JSON.stringify(result2[0]["COUNT(image)"]),
-          });
-        }
-      );
-    }
-  );
+  const isTrade = JSON.stringify(JSON.parse(req.query.type).trade);
+  const isCash = JSON.stringify(JSON.parse(req.query.type).cash);
+
+  if (isTrade == "true" && isCash == "true") {
+    db.query(
+      `SELECT username, time, title, description, image, name FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
+        req.userData.school
+      }' ORDER BY time DESC LIMIT ${page * 20}, 20`,
+      function (err, result) {
+        if (err) throw err;
+
+        db.query(
+          `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
+          function (err, result2) {
+            if (err) throw err;
+            res.json({
+              data: result,
+              count: JSON.stringify(result2[0]["COUNT(image)"]),
+            });
+          }
+        );
+      }
+    );
+  }
+  if (isTrade == "true" && isCash == "false") {
+    db.query(
+      `SELECT username, time, title, description, image, name FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
+        req.userData.school
+      }' AND trade = 'true' ORDER BY time DESC LIMIT ${page * 20}, 20`,
+      function (err, result) {
+        if (err) throw err;
+
+        db.query(
+          `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
+          function (err, result2) {
+            if (err) throw err;
+            res.json({
+              data: result,
+              count: JSON.stringify(result2[0]["COUNT(image)"]),
+            });
+          }
+        );
+      }
+    );
+  }
+  if (isTrade == "false" && isCash == "true") {
+    db.query(
+      `SELECT username, time, title, description, image, name FROM items INNER JOIN users ON items.userID = users.id WHERE items.school = '${
+        req.userData.school
+      }' AND cash = 'true' ORDER BY time DESC LIMIT ${page * 20}, 20`,
+      function (err, result) {
+        if (err) throw err;
+
+        db.query(
+          `SELECT COUNT(image) FROM items WHERE items.school = '${req.userData.school}'`,
+          function (err, result2) {
+            if (err) throw err;
+            res.json({
+              data: result,
+              count: JSON.stringify(result2[0]["COUNT(image)"]),
+            });
+          }
+        );
+      }
+    );
+  }
 });
 
 router.post("/upload", userMiddleware.isLoggedIn, (req, res, next) => {
   db.query(
-    "INSERT INTO items (userID, time, title, description, image, school) VALUES (?, now(), ?, ?, ?, ?)",
+    "INSERT INTO items (userID, time, title, description, image, school, trade, cash) VALUES (?, now(), ?, ?, ?, ?, ?, ?)",
     [
       req.userData.userId,
       req.body.title,
       req.body.description,
       req.body.imageKey,
       req.userData.school,
+      JSON.stringify(req.body.isCheckedSwap),
+      JSON.stringify(req.body.isCheckedCash),
     ],
     (err, result) => {
       if (err) {

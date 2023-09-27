@@ -3,10 +3,10 @@ var mysql = require("mysql");
 // Initialize pool
 var pool = mysql.createPool({
   connectionLimit: 100,
-  host: "swapapp.cbxst3z1494n.us-east-1.rds.amazonaws.com",
-  user: "admin",
-  password: "d8KV26Dt0WY1",
-  database: "swappapp_data",
+  host: "localhost",
+  user: "root",
+  password: "password",
+  database: "sampleProject",
   debug: false,
 });
 

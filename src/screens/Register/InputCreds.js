@@ -9,9 +9,6 @@ import {
 import React from "react";
 import { useState, useRef } from "react";
 import { useRegister } from "../../../store/RegisterContext";
-
-import { UseGetUser } from "../../componets/hooks/getUser";
-import { useUser } from "../../../store/UserContext";
 import { save } from "../../../storageFunctions";
 import { UseCreateUser } from "../../componets/hooks/createUser";
 

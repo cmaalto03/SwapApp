@@ -2,17 +2,14 @@ import { useRegister } from "../../../store/RegisterContext";
 import { useQuery } from "@tanstack/react-query";
 const createUser = async (user) => {
   try {
-    const response = await fetch(
-      "https://kqo7qnhj0l.execute-api.us-east-1.amazonaws.com/prod/api/register",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ user }),
-      }
-    );
+    const response = await fetch("http://136.244.139.127:3000/api/register", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ user }),
+    });
 
     const json = await response.json();
     return json;

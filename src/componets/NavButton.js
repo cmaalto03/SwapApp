@@ -1,12 +1,12 @@
 import * as React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
-import { Entypo } from "@expo/vector-icons";
+import { Feather, Entypo } from "@expo/vector-icons";
 
 export default function NavButton({ title, onPress, icon, color, size }) {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
       <Entypo name={icon} size={size} color={color} />
-      <Text style={StyleSheet.text}>{title}</Text>
+      <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );
 }
@@ -17,11 +17,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    marginRight: 10,
   },
+
   text: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 17,
     color: "black",
     marginLeft: 10,
+    marginRight: 10,
   },
 });
