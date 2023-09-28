@@ -192,14 +192,6 @@ function App() {
                             size={30}
                           />
                         ),
-                        headerRight: () => (
-                          <NavButton
-                            onPress={navigation.goBack}
-                            title="   Post   "
-                            color="black"
-                            size={30}
-                          />
-                        ),
                       })}
                     />
                   </Stack.Navigator>

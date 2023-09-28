@@ -42,7 +42,7 @@ const Profile = ({ navigation }) => {
       </View>
 
       <Image
-        source={require("../../../assets/sampleprofile.png")}
+        source={require("../../../assets/blank.png")}
         style={styles.profile}
       />
       <Text style={styles.name}>{user.user.name}</Text>

@@ -10,9 +10,7 @@ import {
 
 import SchoolItems from "../../../componets/SchoolItems";
 import { useUser } from "../../../../store/UserContext";
-import { useState, useEffect } from "react";
 import { Feather, Entypo } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import FilterBar from "../../../componets/FilterBar";
 import { useCategory } from "../../../../store/CategoryContext";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -65,8 +63,8 @@ const Discovery = ({ navigation, route }) => {
               }}
             >
               <Feather
-                name="search"
-                style={styles.search}
+                name="inbox"
+                style={styles.inbox}
                 size={30}
                 color="black"
               />
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-end",
   },
-  search: {
+  inbox: {
     marginRight: 15,
   },
   message: {

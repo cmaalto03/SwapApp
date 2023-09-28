@@ -29,77 +29,6 @@ function Upload({ navigation, route }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Button
-        title={"Post"}
-        icon="camera"
-        onPress={() => {
-          const uploadFile = async () => {
-            const S3_BUCKET = "swapapp";
-            const REGION = "region";
-
-            AWS.config.update({
-              accessKeyId: "AKIASXKDWHOHM6GXHZWE",
-              secretAccessKey: "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",
-            });
-            const s3 = new AWS.S3({
-              params: { Bucket: S3_BUCKET },
-              region: REGION,
-            });
-
-            const img_uri = image.image;
-            const response = await fetch(img_uri);
-            const blob = await response.blob();
-
-            const imageKey = response._bodyBlob._data.name;
-            const params = {
-              Bucket: S3_BUCKET,
-              Key: "item_image/" + imageKey,
-              Body: blob,
-            };
-
-            var upload = s3
-              .putObject(params)
-              .on("httpUploadProgress", function (evt) {
-                console.log(console.log(evt));
-              })
-              .promise();
-
-            await upload.then((err, data) => {
-              const createItem = async () => {
-                try {
-                  const response = await fetch(
-                    "http://136.244.139.127:3000/api/upload",
-                    {
-                      method: "POST",
-                      headers: {
-                        Authorization: `Bearer ${user.token} `,
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                      },
-                      body: JSON.stringify({
-                        imageKey,
-                        title,
-                        description,
-                        isCheckedSwap,
-                        isCheckedCash,
-                      }),
-                    }
-                  );
-                } catch (error) {
-                  console.error(error);
-                }
-              };
-              createItem();
-
-              navigation.navigate({
-                name: "Discovery",
-              });
-            });
-          };
-
-          uploadFile();
-        }}
-      />
       <ScrollView>
         <Image source={{ uri: image.image }} style={styles.postImage} />
 
@@ -167,7 +96,77 @@ function Upload({ navigation, route }) {
             />
           </View>
         </View>
+        <TouchableOpacity
+          style={styles.uploadBtn}
+          onPress={() => {
+            const uploadFile = async () => {
+              const S3_BUCKET = "swapapp";
+              const REGION = "region";
 
+              AWS.config.update({
+                accessKeyId: "AKIASXKDWHOHM6GXHZWE",
+                secretAccessKey: "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",
+              });
+              const s3 = new AWS.S3({
+                params: { Bucket: S3_BUCKET },
+                region: REGION,
+              });
+
+              const img_uri = image.image;
+              const response = await fetch(img_uri);
+              const blob = await response.blob();
+
+              const imageKey = response._bodyBlob._data.name;
+              const params = {
+                Bucket: S3_BUCKET,
+                Key: "item_image/" + imageKey,
+                Body: blob,
+              };
+
+              var upload = s3
+                .putObject(params)
+                .on("httpUploadProgress", function (evt) {
+                  console.log(console.log(evt));
+                })
+                .promise();
+
+              await upload.then((err, data) => {
+                const createItem = async () => {
+                  try {
+                    const response = await fetch(
+                      "http://136.244.139.127:3000/api/upload",
+                      {
+                        method: "POST",
+                        headers: {
+                          Authorization: `Bearer ${user.token} `,
+                          Accept: "application/json",
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          imageKey,
+                          title,
+                          description,
+                          isCheckedSwap,
+                          isCheckedCash,
+                        }),
+                      }
+                    );
+                  } catch (error) {
+                    console.error(error);
+                  }
+                };
+                createItem();
+                navigation.navigate({
+                  name: "Discovery",
+                });
+              });
+            };
+
+            uploadFile();
+          }}
+        >
+          <Text style={styles.uploadBtnText}>Upload</Text>
+        </TouchableOpacity>
         <View style={styles.disclaimer}>
           <Text style={styles.disclaimerText}>
             By using Swaply, you understand that this listing will become public
@@ -243,6 +242,18 @@ const styles = StyleSheet.create({
   disclaimerText: {
     lineHeight: 25,
     color: "grey",
+  },
+  uploadBtn: {
+    backgroundColor: "#5ce1e6",
+    width: "35%",
+    alignSelf: "center",
+    marginTop: 50,
+    borderWidth: 1,
+  },
+  uploadBtnText: {
+    textAlign: "center",
+    fontSize: 25,
+    color: "black",
   },
 });
 export default Upload;

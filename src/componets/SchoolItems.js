@@ -47,7 +47,7 @@ function SchoolItems({ navigation }) {
         <View style={styles.itemHeader}>
           <Image
             style={styles.profile}
-            source={require("../assets/sampleprofile.png")}
+            source={require("../assets/blank.png")}
           />
           <Text style={styles.name}>{name}</Text>
 

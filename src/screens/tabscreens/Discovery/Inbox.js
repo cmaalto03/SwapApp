@@ -19,12 +19,7 @@ function Inbox({ navigation }) {
   const conversations = [
     {
       id: "1",
-      name: "Admin",
-    },
-
-    {
-      id: "2",
-      name: "BABYTRON1",
+      name: "Tyler",
     },
   ];
   return (

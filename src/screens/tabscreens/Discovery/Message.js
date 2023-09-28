@@ -6,6 +6,7 @@ import {
   TextInput,
   View,
   FlatList,
+  KeyboardAvoidingView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useMessage } from "../../../../store/MessageContext";
@@ -30,7 +31,11 @@ function Message({ route }) {
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset="100"
+      style={styles.container}
+    >
       <FlatList
         data={messages.chats}
         renderItem={({ item }) => (
@@ -39,12 +44,12 @@ function Message({ route }) {
         keyExtractor={(item, index) => "key" + index}
         style={styles.chats}
       />
+
       <View style={styles.sendBar}>
         <TextInput
           style={styles.input}
           //value={userName}
           onChangeText={onChangeMessage}
-          placeholder="username"
           value={message}
           autoCapitalize="none"
         />
@@ -62,7 +67,7 @@ function Message({ route }) {
           <Text style={styles.sendButtonText}>Send</Text>
         </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -78,14 +83,11 @@ export const styles = StyleSheet.create({
     height: 50,
     width: "70%",
     margin: 10,
-    borderWidth: 1,
+    marginBottom: 30,
+    borderWidth: 0.5,
+    fontSize: 20,
   },
-  sendButton: {
-    backgroundColor: "yellow",
-    height: 50,
-    width: "15%",
-    margin: 10,
-  },
+  sendButton: {},
 
   messageLeft: {
     backgroundColor: "#D3D3D3",
@@ -109,8 +111,20 @@ export const styles = StyleSheet.create({
 
   sendButtonText: {
     textAlign: "center",
+    justifyContent: "center",
+    backgroundColor: "blue",
+
+    color: "white",
+    fontSize: 18,
+    flex: 1,
+    height: 50,
+    width: 90,
+    margin: 10,
+    marginLeft: 0,
+    marginBottom: 30,
   },
   sendBar: {
     flexDirection: "row",
+    backgroundColor: "#5ce1e6",
   },
 });
