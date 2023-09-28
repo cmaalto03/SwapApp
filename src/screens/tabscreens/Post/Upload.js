@@ -104,8 +104,8 @@ function Upload({ navigation, route }) {
               const REGION = "region";
 
               AWS.config.update({
-                accessKeyId: "AKIASXKDWHOHM6GXHZWE",
-                secretAccessKey: "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",
+                accessKeyId: "filler",
+                secretAccessKey: "filler",
               });
               const s3 = new AWS.S3({
                 params: { Bucket: S3_BUCKET },
