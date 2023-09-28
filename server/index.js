@@ -57,7 +57,6 @@ io.on("connection", (socket) => {
 
     console.log("Client event");
 
-  
     if (data.message) {
       //insert new message to database
       db.query(
