@@ -1,6 +1,6 @@
 # SwapApp
 
-Geared towards college students, this marketplace on mobile applications aims to facilitate trade on the college community. It supports traditional buying and selling, as well as a barter system. This version is still very early in the development stages and has not reached a MVP yet, but the demo showcases some of its working features.
+Geared towards college students, this marketplace on mobile applications aims to facilitate trade for the college community. It supports traditional buying and selling, as well as a barter system. This version is still very early in the development stages and has not reached a MVP yet, but the demo showcases some of its working features.
 
 *This version only has the photos of each post in the cloud (s3 bucket). I have lambda functions, as well as an RDS MySQL, database set up, but they are not currently active because the app is still in early dev stages. For this version, the APIs and MySQL database are all hosted locally on my machine, and I'm using Expo Go for the client. Contact me if you want to set up the testing environment*
 
